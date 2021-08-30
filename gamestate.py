@@ -4,6 +4,9 @@ class GameState(object):
     def __init__(self):
         self.turn = 'Z'
         self.AI_symbol = 'Z'
+        self.player_symbol = 'Z'
+        self.is_AI_mode = False
+        self.previous = None
         self.board = []
         row = []
         for i in range(0,3):
@@ -36,6 +39,27 @@ class GameState(object):
                     return 'F'
         return 'D'
 
+    def getValidMoves(self):
+        """Returns a list of tuples for all the possible moves including the index in a one dimensional list."""
+        result = []
+        for i in range(0,3):
+            for j in range(0,3):
+                if self.board[i][j] == '':
+                    result.append((i,j,i*3+j))
+        return result
+
+    def clone(self):
+        new_state = GameState()
+        new_state.turn = self.turn
+        new_state.AI_symbol = self.AI_symbol
+        new_state.player_symbol = self.player_symbol
+        new_state.is_AI_mode = self.is_AI_mode
+        new_state.previous = self
+        for i in range(0,3):
+            for j in range(0,3):
+                new_state.board[i][j] = self.board[i][j]
+        return new_state
+
     def print_state(self):
         """Prints current state for debugging"""
         print(self.board[0])
@@ -57,7 +81,15 @@ class GameState(object):
 #p1.board[0][1] = 'X'
 #p1.board[0][2] = 'X'
 #p1.set_cell(1, 0, 'O')
+#print(p1.getValidMoves())
 #p1.clear_board()
 #p1.board[1][0] = 'O'
+#print(p1.getValidMoves())
 #p1.board[2][1] = 'O'
 #p1.print_state()
+#p2 = p1.clone()
+#p2.print_state()
+#p1.board[0][2] = 'X'
+#p1.print_state()
+#p2.print_state()
+#p2.previous.print_state()

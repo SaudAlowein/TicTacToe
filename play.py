@@ -29,25 +29,27 @@ def handle_q_popup(event, new_window):
 
 def handle_move(index):
     """Updates the board when an active cell is clicked."""
-#    global state.turn
-    if state.turn == 'X':
+#    global current_state.turn
+    if current_state.turn == 'X':
         color = 'red'
-#        state.set_cell(int(index/3), int(index%3), 'X')
-        state.board[int(index/3)] [int(index%3)] = 'X'
+#        current_state.set_cell(int(index/3), int(index%3), 'X')
+        current_state.board[int(index/3)] [int(index%3)] = 'X'
     else:
         color = 'blue'
-#        state.set_cell(int(index/3), int(index%3), 'O')
-        state.board[int(index/3)] [int(index%3)] = 'O'
-    buttons_list[index].config(state='disabled', text=state.turn, disabledforeground=color)
-    winner = state.check_winner()
-    state.print_state()
-    print(winner)
+#        current_state.set_cell(int(index/3), int(index%3), 'O')
+        current_state.board[int(index/3)] [int(index%3)] = 'O'
+    buttons_list[index].config(state='disabled', text=current_state.turn, disabledforeground=color)
+    winner = current_state.check_winner()
+    current_state.print_state()
+#    print(winner)
     if not winner == 'F':
         disable_buttons()
         popup(winner)
     else:
-        state.turn = 'O' if state.turn == 'X' else 'X'
-        window.title(f'Tic Tac Toe ({state.turn}\'s state.turn)')
+        current_state.turn = 'O' if current_state.turn == 'X' else 'X'
+        window.title(f'Tic Tac Toe ({current_state.turn}\'s current_state.turn)')
+        if current_state.is_AI_mode and current_state.turn == current_state.AI_symbol:
+            findMove()
 
 #def check_winner():
 #    """Checks if there's winner and restate.turns their symbol, 'D' if it's a draw, 'F' if the game is not finished. It then disables buttons appropriately."""
@@ -95,12 +97,12 @@ def disable_buttons():
 
 def initialize_board(frame):
     """Intializes the initial 3x3 board."""
-    state.clear_board()
+    current_state.clear_board()
     remove_frame()
     if len(buttons_list) > 0:
         buttons_list.clear()
     randomize_player()
-    window.title(f'Tic Tac Toe ({state.turn}\'s turn)')
+    window.title(f'Tic Tac Toe ({current_state.turn}\'s turn)')
     window.configure(bg='black')
     window.geometry('950x950')
     move_font = font.Font(family='Halvetica', weight='bold', size=30)
@@ -143,6 +145,7 @@ def set_frame(frame):
 
 def initialize_menu():
     """Create the main menu frame."""
+    current_state.is_AI_mode = False
     remove_frame()
     window.configure(bg='Light Gray')
     frame = tk.Frame(master=window)
@@ -151,7 +154,7 @@ def initialize_menu():
     welcome_label = tk.Label(master=frame, text='Welcome to Tic Tac Toe!', font=welcome_font)
     select_label = tk.Label(master=frame, text='Select the mode you would like to play.', font=select_font)
     start_2player_button = tk.Button(master=frame, text='2 Players', command=lambda frame=frame: initialize_board(frame))
-    start_AI_button = tk.Button(master=frame, text='Play against an AI', command=lambda frame=frame: initialize_board(frame))
+    start_AI_button = tk.Button(master=frame, text='Play against an AI', command=lambda frame=frame: AI_mode(frame))
     key_label = tk.Label(master=frame, text='You can press \'q\' to quit or \'m\' to restate.turn to this menu at any time.')
     welcome_label.pack(expand=True)
     select_label.pack(expand=True)
@@ -161,11 +164,24 @@ def initialize_menu():
     frame.pack(expand=True)
     set_frame(frame)
 
+def AI_mode(frame):
+    """Starts AI mode"""
+    current_state.is_AI_mode = True
+    initialize_board(frame)
+    if current_state.turn == current_state.AI_symbol:
+        findMove()
+
+def findMove():
+    moves = current_state.getValidMoves()
+    if moves:
+        handle_move(moves[0][2])
+
 def randomize_player():
     """Randomizes first player symbol and AI player."""
-#    global state.turn
-    state.turn = random.choice(('X','O'))
-    state.AI_symbol = random.choice(('X','O'))
+#    global current_state.turn
+    current_state.turn = random.choice(('X','O'))
+    current_state.AI_symbol = random.choice(('X','O'))
+    current_state.player_symbol = 'O' if current_state.AI_symbol == 'X' else 'X'
 
 def end_to_menu(window):
     """Links popup button to the main menu."""
@@ -181,9 +197,9 @@ def main_menu(event):
     initialize_menu()
 
 if __name__ == '__main__':
-    state = GameState()
-    #state.board[0][0] = 'O'
-    #state.print_state()
+    current_state = GameState()
+    #current_state.board[0][0] = 'O'
+    #current_state.print_state()
     buttons_list = []
     current_frame = None
     window = tk.Tk()
