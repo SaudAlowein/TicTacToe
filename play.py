@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from gamestate import GameState
 import random
 import tkinter as tk
 import tkinter.font as font
@@ -28,57 +29,64 @@ def handle_q_popup(event, new_window):
 
 def handle_move(index):
     """Updates the board when an active cell is clicked."""
-    global turn
-    if turn == 'X':
+#    global state.turn
+    if state.turn == 'X':
         color = 'red'
+#        state.set_cell(int(index/3), int(index%3), 'X')
+        state.board[int(index/3)] [int(index%3)] = 'X'
     else:
         color = 'blue'
-    buttons_list[index].config(state='disabled', text=turn, disabledforeground=color)
-    winner = check_winner()
+#        state.set_cell(int(index/3), int(index%3), 'O')
+        state.board[int(index/3)] [int(index%3)] = 'O'
+    buttons_list[index].config(state='disabled', text=state.turn, disabledforeground=color)
+    winner = state.check_winner()
+    state.print_state()
+    print(winner)
     if not winner == 'F':
+        disable_buttons()
         popup(winner)
     else:
-        turn = 'O' if turn == 'X' else 'X'
-        window.title(f'Tic Tac Toe ({turn}\'s turn)')
+        state.turn = 'O' if state.turn == 'X' else 'X'
+        window.title(f'Tic Tac Toe ({state.turn}\'s state.turn)')
 
-def check_winner():
-    """Checks if there's winner and returns their symbol, 'D' if it's a draw, 'F' if the game is not finished."""
-    if buttons_list[0]['state'] == 'disabled':
-        if buttons_list[0]['text'] == buttons_list[1]['text'] == buttons_list[2]['text']:
-            disable_buttons()
-            return buttons_list[0]['text']
-        elif buttons_list[0]['text'] == buttons_list[4]['text'] == buttons_list[8]['text']:
-            disable_buttons()
-            return buttons_list[0]['text']
-        elif buttons_list[0]['text'] == buttons_list[3]['text'] == buttons_list[6]['text']:
-            disable_buttons()
-            return buttons_list[0]['text']
-    if buttons_list[1]['state'] == 'disabled':
-        if buttons_list[1]['text'] == buttons_list[4]['text'] == buttons_list[7]['text']:
-            disable_buttons()
-            return buttons_list[1]['text']
-    if buttons_list[2]['state'] == 'disabled':
-        if buttons_list[2]['text'] == buttons_list[4]['text'] == buttons_list[6]['text']:
-            disable_buttons()
-            return buttons_list[2]['text']
-        elif buttons_list[2]['text'] == buttons_list[5]['text'] == buttons_list[8]['text']:
-            disable_buttons()
-            return buttons_list[2]['text']
-    if buttons_list[5]['state'] == 'disabled':
-        if buttons_list[5]['text'] == buttons_list[4]['text'] == buttons_list[3]['text']:
-            disable_buttons()
-            return buttons_list[5]['text']
-    if buttons_list[8]['state'] == 'disabled':
-        if buttons_list[8]['text'] == buttons_list[7]['text'] == buttons_list[6]['text']:
-            disable_buttons()
-            return buttons_list[8]['text']
-    for button in buttons_list:
-        if button['state'] == 'normal':
-            break
-        if button['state'] == 'disabled' and button == buttons_list[8]:
-            disable_buttons()
-            return 'D'
-    return 'F'
+#def check_winner():
+#    """Checks if there's winner and restate.turns their symbol, 'D' if it's a draw, 'F' if the game is not finished. It then disables buttons appropriately."""
+#    if buttons_list[0]['state'] == 'disabled':
+#        if buttons_list[0]['text'] == buttons_list[1]['text'] == buttons_list[2]['text']:
+#            disable_buttons()
+#            restate.turn buttons_list[0]['text']
+#        elif buttons_list[0]['text'] == buttons_list[4]['text'] == buttons_list[8]['text']:
+#            disable_buttons()
+#            restate.turn buttons_list[0]['text']
+#        elif buttons_list[0]['text'] == buttons_list[3]['text'] == buttons_list[6]['text']:
+#            disable_buttons()
+#            restate.turn buttons_list[0]['text']
+#    if buttons_list[1]['state'] == 'disabled':
+#        if buttons_list[1]['text'] == buttons_list[4]['text'] == buttons_list[7]['text']:
+#            disable_buttons()
+#            restate.turn buttons_list[1]['text']
+#    if buttons_list[2]['state'] == 'disabled':
+#        if buttons_list[2]['text'] == buttons_list[4]['text'] == buttons_list[6]['text']:
+#            disable_buttons()
+#            restate.turn buttons_list[2]['text']
+#        elif buttons_list[2]['text'] == buttons_list[5]['text'] == buttons_list[8]['text']:
+#            disable_buttons()
+#            restate.turn buttons_list[2]['text']
+#    if buttons_list[5]['state'] == 'disabled':
+#        if buttons_list[5]['text'] == buttons_list[4]['text'] == buttons_list[3]['text']:
+#            disable_buttons()
+#            restate.turn buttons_list[5]['text']
+#    if buttons_list[8]['state'] == 'disabled':
+#        if buttons_list[8]['text'] == buttons_list[7]['text'] == buttons_list[6]['text']:
+#            disable_buttons()
+#            restate.turn buttons_list[8]['text']
+#    for button in buttons_list:
+#        if button['state'] == 'normal':
+#            break
+#        if button['state'] == 'disabled' and button == buttons_list[8]:
+#            disable_buttons()
+#            restate.turn 'D'
+#    restate.turn 'F'
 
 def disable_buttons():
     """Disables all buttons on the board."""
@@ -87,11 +95,12 @@ def disable_buttons():
 
 def initialize_board(frame):
     """Intializes the initial 3x3 board."""
+    state.clear_board()
     remove_frame()
     if len(buttons_list) > 0:
         buttons_list.clear()
     randomize_player()
-    window.title(f'Tic Tac Toe ({turn}\'s turn)')
+    window.title(f'Tic Tac Toe ({state.turn}\'s turn)')
     window.configure(bg='black')
     window.geometry('950x950')
     move_font = font.Font(family='Halvetica', weight='bold', size=30)
@@ -142,18 +151,21 @@ def initialize_menu():
     welcome_label = tk.Label(master=frame, text='Welcome to Tic Tac Toe!', font=welcome_font)
     select_label = tk.Label(master=frame, text='Select the mode you would like to play.', font=select_font)
     start_2player_button = tk.Button(master=frame, text='2 Players', command=lambda frame=frame: initialize_board(frame))
-    key_label = tk.Label(master=frame, text='You can press \'q\' to quit or \'m\' to return to this menu at any time.')
+    start_AI_button = tk.Button(master=frame, text='Play against an AI', command=lambda frame=frame: initialize_board(frame))
+    key_label = tk.Label(master=frame, text='You can press \'q\' to quit or \'m\' to restate.turn to this menu at any time.')
     welcome_label.pack(expand=True)
     select_label.pack(expand=True)
     start_2player_button.pack(expand=True)
+    start_AI_button.pack(expand=True)
     key_label.pack(expand=True)
     frame.pack(expand=True)
     set_frame(frame)
 
 def randomize_player():
-    """Randomizes first player symbol."""
-    global turn
-    turn = random.choice(('X','O'))
+    """Randomizes first player symbol and AI player."""
+#    global state.turn
+    state.turn = random.choice(('X','O'))
+    state.AI_symbol = random.choice(('X','O'))
 
 def end_to_menu(window):
     """Links popup button to the main menu."""
@@ -165,10 +177,13 @@ def close_game(event):
     quit()
 
 def main_menu(event):
-    """Handle m key stroke to return to main menu."""
+    """Handle m key stroke to restate.turn to main menu."""
     initialize_menu()
 
 if __name__ == '__main__':
+    state = GameState()
+    #state.board[0][0] = 'O'
+    #state.print_state()
     buttons_list = []
     current_frame = None
     window = tk.Tk()
