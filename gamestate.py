@@ -49,6 +49,7 @@ class GameState(object):
         return result
 
     def clone(self):
+        """Creates a perfect clone of the object then sets the parent as previous."""
         new_state = GameState()
         new_state.turn = self.turn
         new_state.AI_symbol = self.AI_symbol
@@ -60,14 +61,29 @@ class GameState(object):
                 new_state.board[i][j] = self.board[i][j]
         return new_state
 
+    def make_move(self, i, j):
+        """Creates a new state and makes the moves with the given coordinates."""
+        moves = self.getValidMoves()
+        move = (i, j)
+        for valid_move in moves:
+            if move == valid_move[:-1]:
+                new_state = self.clone()
+                new_state.board[i][j] = new_state.turn
+                new_state.turn = 'O' if new_state.turn == 'X' else 'X'
+                return new_state
+        print(f'The move {move} is not valid')
+        return None
+
+
     def print_state(self):
-        """Prints current state for debugging"""
+        """Prints current state for debugging."""
         print(self.board[0])
         print(self.board[1])
         print(self.board[2])
         print(f'The current result is {self.check_winner()}')
 
     def clear_board(self):
+        """Resets the board to have empty cells."""
         for i in range(0,3):
             for j in range(0,3):
                 self.board[i][j] = ''
@@ -80,6 +96,7 @@ class GameState(object):
 #p1.board[0][0] = 'X'
 #p1.board[0][1] = 'X'
 #p1.board[0][2] = 'X'
+#p1.turn = 'O'
 #p1.set_cell(1, 0, 'O')
 #print(p1.getValidMoves())
 #p1.clear_board()
@@ -93,3 +110,9 @@ class GameState(object):
 #p1.print_state()
 #p2.print_state()
 #p2.previous.print_state()
+#p3 = p1.make_move(1, 1)
+#p1.print_state()
+#p3.previous.print_state()
+#p3.print_state()
+#print(p1.turn)
+#print(p3.turn)

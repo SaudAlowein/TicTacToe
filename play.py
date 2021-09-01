@@ -51,45 +51,6 @@ def handle_move(index):
         if current_state.is_AI_mode and current_state.turn == current_state.AI_symbol:
             findMove()
 
-#def check_winner():
-#    """Checks if there's winner and restate.turns their symbol, 'D' if it's a draw, 'F' if the game is not finished. It then disables buttons appropriately."""
-#    if buttons_list[0]['state'] == 'disabled':
-#        if buttons_list[0]['text'] == buttons_list[1]['text'] == buttons_list[2]['text']:
-#            disable_buttons()
-#            restate.turn buttons_list[0]['text']
-#        elif buttons_list[0]['text'] == buttons_list[4]['text'] == buttons_list[8]['text']:
-#            disable_buttons()
-#            restate.turn buttons_list[0]['text']
-#        elif buttons_list[0]['text'] == buttons_list[3]['text'] == buttons_list[6]['text']:
-#            disable_buttons()
-#            restate.turn buttons_list[0]['text']
-#    if buttons_list[1]['state'] == 'disabled':
-#        if buttons_list[1]['text'] == buttons_list[4]['text'] == buttons_list[7]['text']:
-#            disable_buttons()
-#            restate.turn buttons_list[1]['text']
-#    if buttons_list[2]['state'] == 'disabled':
-#        if buttons_list[2]['text'] == buttons_list[4]['text'] == buttons_list[6]['text']:
-#            disable_buttons()
-#            restate.turn buttons_list[2]['text']
-#        elif buttons_list[2]['text'] == buttons_list[5]['text'] == buttons_list[8]['text']:
-#            disable_buttons()
-#            restate.turn buttons_list[2]['text']
-#    if buttons_list[5]['state'] == 'disabled':
-#        if buttons_list[5]['text'] == buttons_list[4]['text'] == buttons_list[3]['text']:
-#            disable_buttons()
-#            restate.turn buttons_list[5]['text']
-#    if buttons_list[8]['state'] == 'disabled':
-#        if buttons_list[8]['text'] == buttons_list[7]['text'] == buttons_list[6]['text']:
-#            disable_buttons()
-#            restate.turn buttons_list[8]['text']
-#    for button in buttons_list:
-#        if button['state'] == 'normal':
-#            break
-#        if button['state'] == 'disabled' and button == buttons_list[8]:
-#            disable_buttons()
-#            restate.turn 'D'
-#    restate.turn 'F'
-
 def disable_buttons():
     """Disables all buttons on the board."""
     for button in buttons_list:
