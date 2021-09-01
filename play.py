@@ -30,20 +30,15 @@ def handle_q_popup(event, new_window):
 
 def handle_move(index):
     """Updates the board when an active cell is clicked."""
-#    global current_state.turn
     if current_state.turn == 'X':
         color = 'red'
-#        current_state.set_cell(int(index/3), int(index%3), 'X')
         current_state.board[int(index/3)] [int(index%3)] = 'X'
     else:
         color = 'blue'
-#        current_state.set_cell(int(index/3), int(index%3), 'O')
         current_state.board[int(index/3)] [int(index%3)] = 'O'
     current_state.previous_move = (int(index/3), int(index%3))
     buttons_list[index].config(state='disabled', text=current_state.turn, disabledforeground=color)
     winner = current_state.is_terminal()
-    #current_state.print_state()
-#    print(winner)
     if not winner == 'F':
         disable_buttons()
         popup(winner)
@@ -128,7 +123,7 @@ def initialize_menu():
     set_frame(frame)
 
 def AI_mode(frame):
-    """Starts AI mode"""
+    """Starts AI mode."""
     current_state.is_AI_mode = True
     initialize_board(frame)
     if current_state.turn == current_state.AI_symbol:
@@ -144,47 +139,36 @@ def findMove():
     for valid_move in moves:
         move = valid_move[:-1]
         temp=minimax(current_state.make_move(move[0], move[1]), depth - 1)
-#        print(f'value:{value} <= temp:{temp}')
         if value <= temp:
             final_move = move
             value = temp
     if final_move == (-1, -1):
-        print('No move picked, making first viable move.')
         final_move = moves[0][:-1]
     index=final_move[0]*3+final_move[1]
-    print(f'index:{index}, value:{value}')
-    print('========================================================================')
+    if len(moves) == 9:
+        index = 4
     handle_move(index)
 
 
 def minimax(state, depth):
-    """Creates the game tree and traverses it"""
+    """Creates the game tree and traverses it."""
     if not (state.is_terminal() == 'F') or depth == 0:
-        print(f'Entering terminal state with depth: {depth}')
-        state.print_state()
         value = utility(state, depth)
         return value
     moves = state.getValidMoves()
-#    print(f'In minimax, moves:{moves}, value:{value}, depth:{depth}')
-    state.print_state()
-    move = (-1, -1)
     if state.turn == state.AI_symbol:
         value = -math.inf
         for valid_move in moves:
-#            move = valid_move[:-1]
-            print(f'checking move:{valid_move}')
             value = max(value, minimax(state.make_move(valid_move[0], valid_move[1]), depth - 1))
         return value
     else:
         value = math.inf
         for valid_move in moves:
-#            move = valid_move[:-1]
-            print(f'checking move:{valid_move}')
             value = min(value, minimax(state.make_move(valid_move[0], valid_move[1]), depth - 1))
         return value
 
 def utility(state, depth):
-
+    """Evaluates how good a certain move is using a very simple heuristic."""
     if state.is_terminal() == state.AI_symbol:
         score = 9999
         if depth == 3:
@@ -196,35 +180,14 @@ def utility(state, depth):
     elif state.is_terminal() == 'D':
         score = 0
     else:
-        score = random.choice((0,1,2,3,4,5,6,7,8,9))
-    i = state.previous_move[0]
-    j = state.previous_move[1]
-    print(f'Score:{score}')
+        if state.previous_move[0] == state.previous_move[1]:
+            score = 10
+        else:
+            score = random.choice((1,2,3,4,5))
     return score
-
-def check_adjecent(state):
-    i = state.previous_move[0]
-    j = state.previous_move[1]
-    previous_symbol = state.board[i][j]
-    score = 0
-    #if i == 1 and j == 1:
-
-
-#def check_one_off_win(state):
-#    """AI player uses this function to check for moves that need immediate action. Returns a tuple of the cell and the player that needs to play there to win."""
-#    count_player_symbol = 0
-#    count_AI_symbol = 0
-#    temp_symbol = ''
-#    temp = (-1, -1)
-#    while i in range(0,3):
-        #if not state.board[i][0] == '' and (state.board[i][1] == state.board[i][0] or state.board[i][2] == state.board[i][0]):
-        #    temp_symbol = state.board[]
-#        while j in range(0,3):
-
 
 def randomize_player():
     """Randomizes first player symbol and AI player."""
-#    global current_state.turn
     current_state.turn = random.choice(('X','O'))
     current_state.AI_symbol = random.choice(('X','O'))
     current_state.player_symbol = 'O' if current_state.AI_symbol == 'X' else 'X'
@@ -244,8 +207,6 @@ def main_menu(event):
 
 if __name__ == '__main__':
     current_state = GameState()
-    #current_state.board[0][0] = 'O'
-    #current_state.print_state()
     value = math.inf
     buttons_list = []
     current_frame = None

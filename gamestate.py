@@ -1,5 +1,5 @@
 class GameState(object):
-    """This class holds all relevent inforamtion and operations regarding the state of the game, and is mostly used by the AI player"""
+    """This class holds all relevent inforamtion and operations regarding the state of the game, and is mostly used by the AI player."""
 
     def __init__(self):
         self.turn = 'Z'
@@ -88,32 +88,3 @@ class GameState(object):
         for i in range(0,3):
             for j in range(0,3):
                 self.board[i][j] = ''
-
-#    def set_cell(self, i, j, player):
-#        self.board[i][j] == player
-
-
-#p1 = GameState()
-#p1.board[0][0] = 'X'
-#p1.board[0][1] = 'X'
-#p1.board[0][2] = 'X'
-#p1.turn = 'O'
-#p1.set_cell(1, 0, 'O')
-#print(p1.getValidMoves())
-#p1.clear_board()
-#p1.board[1][0] = 'O'
-#print(p1.getValidMoves())
-#p1.board[2][1] = 'O'
-#p1.print_state()
-#p2 = p1.clone()
-#p2.print_state()
-#p1.board[0][2] = 'X'
-#p1.print_state()
-#p2.print_state()
-#p2.previous.print_state()
-#p3 = p1.make_move(1, 1)
-#p1.print_state()
-#p3.previous.print_state()
-#p3.print_state()
-#print(p1.turn)
-#print(p3.turn)
