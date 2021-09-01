@@ -7,6 +7,7 @@ class GameState(object):
         self.player_symbol = 'Z'
         self.is_AI_mode = False
         self.previous = None
+        self.previous_move = None
         self.board = []
         row = []
         for i in range(0,3):
@@ -15,7 +16,7 @@ class GameState(object):
             self.board.append(row)
             row = []
 
-    def check_winner(self):
+    def is_terminal(self):
         """Checks if there's winner and returns their symbol, 'D' if it's a draw, 'F' if the game is not finished."""
         if not self.board[0][0] == '' and self.board[0][0] == self.board[0][1] == self.board[0][2]:
             return self.board[0][0]
@@ -70,17 +71,17 @@ class GameState(object):
                 new_state = self.clone()
                 new_state.board[i][j] = new_state.turn
                 new_state.turn = 'O' if new_state.turn == 'X' else 'X'
+                new_state.previous_move = move
                 return new_state
         print(f'The move {move} is not valid')
         return None
-
 
     def print_state(self):
         """Prints current state for debugging."""
         print(self.board[0])
         print(self.board[1])
         print(self.board[2])
-        print(f'The current result is {self.check_winner()}')
+        print(f'The current result is {self.is_terminal()}')
 
     def clear_board(self):
         """Resets the board to have empty cells."""
